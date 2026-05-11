@@ -1,0 +1,85 @@
+schema: spec-driven
+
+context: |
+  Codeflow-agent is a minimal coding agent for local repositories.
+
+  MVP scope:
+  - Single-agent LangGraph workflow only.
+  - Local repository inspection, compact context building, planning, patch-based editing,
+    patch review, controlled patch application, pytest verification, bounded retry, and
+    final reporting.
+  - The expected loop is: analyze task -> build repo context -> plan changes ->
+    generate patch -> review patch -> apply patch -> run tests -> analyze result ->
+    retry or final summary.
+
+  Architecture:
+  - Dependency direction is CLI -> Workflow -> Nodes -> Tool Interfaces ->
+    Local Implementations -> Filesystem / Git / Pytest.
+  - CLI parses input and displays output; it must not directly modify repository files.
+  - LangGraph workflow owns nodes, edges, conditional routing, retry limits, and
+    termination.
+  - Nodes read and write AgentState and call LLMs or tools; nodes must not perform raw
+    filesystem or subprocess operations directly.
+  - Tools provide structured contracts and local implementations for repository
+    inspection, patch handling, git diff summaries, and pytest execution.
+
+  State and tool constraints:
+  - Keep AgentState small and stable.
+  - Do not store the full repository, full test logs, or very large diffs in state.
+  - Use error_summary for compressed failure information.
+  - Use iteration_count and max_iterations for retry control.
+  - Write final_output only on the final summary path.
+  - Every tool returns structured results with explicit failure data.
+  - File paths must stay inside repo_root.
+  - Tool output must be length-limited or summarized.
+  - Read-only tools must not modify files.
+  - Test tools must use allowlisted commands, shell=False, and a timeout.
+
+  Patch and verification constraints:
+  - The LLM must not directly overwrite files.
+  - All code changes must use unified diff patches with repository-relative paths.
+  - Patches must be reviewed before application.
+  - Patch application must run a dry-run check first.
+  - The default test command is python -m pytest -q.
+  - Test failures must be summarized before retry.
+  - Do not report success when tests fail.
+  - Stop when the retry limit is reached.
+
+  Hard non-goals:
+  - No full Multi-Agent orchestration in the MVP.
+  - No MCP integration, IDE plugins, cloud execution, arbitrary shell execution,
+    automatic dependency installation, automatic git commit/push/reset/checkout,
+    vector database indexing, benchmark platform, long-term memory, or direct file
+    overwrite by the LLM.
+
+rules:
+  proposal:
+    - Keep proposals focused on the MVP boundary described in README.md and AGENTS.md.
+    - Include explicit non-goals for any work that could drift into post-MVP scope.
+    - Prefer the conservative interpretation when README.md, docs/architecture.md, or
+      AGENTS.md could be read differently.
+    - Do not propose new frameworks, Multi-Agent roles, MCP, IDE, cloud, benchmark,
+      vector database, or long-term-memory work unless explicitly requested.
+  design:
+    - Preserve the single-agent LangGraph architecture.
+    - Keep each workflow node responsible for one clear step and document the state
+      fields it reads and writes.
+    - Represent conditional edges, retry exhaustion, and failure paths explicitly.
+    - Keep AgentState small; summarize large logs, diffs, and errors instead of storing
+      raw large content.
+    - Keep tool contracts structured and ensure normal failures return structured error
+      data rather than crashing the workflow.
+  specs:
+    - Requirements must be testable against the MVP workflow and architecture.
+    - Keep repository access constrained to repo_root.
+    - Require patch-based editing for every repository modification.
+    - Require controlled pytest verification with an allowlisted command, shell=False,
+      timeout, and summarized failure feedback.
+    - Do not add requirements for post-MVP systems unless the change explicitly says so.
+  tasks:
+    - Break implementation into small, reviewable steps.
+    - Change one tool, node, or edge at a time when possible.
+    - Add or update tests for every meaningful behavior change.
+    - Sequence work from read-only tools to planning, patch generation, patch review,
+      patch application, verification, retry, and final summary.
+    - Include verification steps, defaulting to python -m pytest -q where applicable.
