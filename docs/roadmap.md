@@ -34,7 +34,7 @@ Use the following status values:
 
 | Milestone | Name                        | Status        |
 | --------- | --------------------------- | ------------- |
-| 1         | Read-only Repo Agent        | `not_started` |
+| 1         | Read-only Repo Agent        | `done`        |
 | 2         | Plan Mode                   | `not_started` |
 | 3         | Patch Generation            | `not_started` |
 | 4         | Patch Review and Apply      | `not_started` |
@@ -43,7 +43,7 @@ Use the following status values:
 
 ## 4. Milestone 1: Read-only Repo Agent
 
-Status: `not_started`
+Status: `done`
 
 ### Goal
 
@@ -74,18 +74,29 @@ codeflow read --repo ./examples/calculator_bug src/calculator.py
 
 ### Acceptance Criteria
 
-- [ ] The package can be installed or run locally.
-- [ ] `ToolResult` exists and is used by tools.
-- [ ] Safe path utilities reject paths outside `repo_root`.
-- [ ] `list_files` lists allowed repository files.
-- [ ] `list_files` ignores forbidden directories such as `.git`, `.venv`, `__pycache__`, and `.pytest_cache`.
-- [ ] `read_file` reads text files inside `repo_root`.
-- [ ] `read_file` rejects missing files, binary files, and path traversal.
-- [ ] `search_code` returns matching file paths, line numbers, and snippets.
-- [ ] Tool output is length-limited or summarized.
-- [ ] All tools have explicit failure returns.
-- [ ] No command modifies repository files.
-- [ ] Tool-level tests pass.
+- [x] The package can be installed or run locally.
+- [x] `ToolResult` exists and is used by tools.
+- [x] Safe path utilities reject paths outside `repo_root`.
+- [x] `list_files` lists allowed repository files.
+- [x] `list_files` ignores forbidden directories such as `.git`, `.venv`, `__pycache__`, and `.pytest_cache`.
+- [x] `read_file` reads text files inside `repo_root`.
+- [x] `read_file` rejects missing files, binary files, and path traversal.
+- [x] `search_code` returns matching file paths, line numbers, and snippets.
+- [x] Tool output is length-limited or summarized.
+- [x] All tools have explicit failure returns.
+- [x] No command modifies repository files.
+- [x] Tool-level tests pass.
+
+### Delivered Behavior
+
+Milestone 1 added the `codeflow_agent` package, `ToolResult`, safe path utilities,
+read-only repository tools, the minimal `codeflow` CLI, and the
+`examples/calculator_bug` fixture. The `search_code` implementation is pure
+Python for now; `ripgrep` is not required for Milestone 1 and can be introduced
+later as an optional adapter behind the same tool contract.
+
+Project pytest configuration collects only the main `tests/` directory so the
+demo fixture tests are not collected accidentally.
 
 ### Non-goals
 
@@ -309,7 +320,7 @@ Create and demonstrate the full MVP loop on a small Python repository.
 
 Implement or prepare:
 
-- `examples/calculator_bug`;
+- use the existing `examples/calculator_bug` fixture from Milestone 1;
 - a failing test for the initial bug;
 - full `codeflow fix` demo;
 - success-path demonstration;

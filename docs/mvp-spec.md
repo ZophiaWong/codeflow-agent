@@ -303,12 +303,16 @@ The recommended MVP demo repository is:
 examples/calculator_bug
 ```
 
-The demo project should contain:
+Milestone 1 includes this repository as a stable read-only fixture. It contains:
 
 ```text
 src/calculator.py
 tests/test_calculator.py
 ```
+
+Project-level pytest collection is configured to use only the main `tests/`
+directory, so demo fixture tests are not collected accidentally before the full
+Milestone 6 fix loop exists.
 
 ### Initial Bug
 
