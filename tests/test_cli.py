@@ -50,3 +50,13 @@ def test_cli_plan_outputs_json_tool_result(capsys):
     assert output["ok"] is True
     assert output["data"]["status"] == "planned"
     assert "src/calculator.py" in output["data"]["plan"]["target_files"]
+
+
+def test_cli_patch_outputs_json_tool_result(capsys):
+    exit_code = main(["patch", "--repo", "examples/calculator_bug", "Fix add() for negative numbers"])
+
+    output = json.loads(capsys.readouterr().out)
+    assert exit_code == 0
+    assert output["ok"] is True
+    assert output["data"]["status"] == "patch_generated"
+    assert "+    return a + b" in output["data"]["patch"]

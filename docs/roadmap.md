@@ -36,7 +36,7 @@ Use the following status values:
 | --------- | --------------------------- | ------------- |
 | 1         | Read-only Repo Agent        | `done`        |
 | 2         | Plan Mode                   | `done`        |
-| 3         | Patch Generation            | `not_started` |
+| 3         | Patch Generation            | `done`        |
 | 4         | Patch Review and Apply      | `not_started` |
 | 5         | Run Tests and Feedback Loop | `not_started` |
 | 6         | Minimal Demo                | `not_started` |
@@ -172,7 +172,7 @@ Do not implement:
 
 ## 6. Milestone 3: Patch Generation
 
-Status: `not_started`
+Status: `done`
 
 ### Goal
 
@@ -195,15 +195,24 @@ codeflow patch --repo ./examples/calculator_bug "Fix add() for negative numbers"
 
 ### Acceptance Criteria
 
-- [ ] The agent can generate a unified diff patch.
-- [ ] The patch uses repository-relative paths.
-- [ ] The patch does not contain Markdown code fences.
-- [ ] The patch is scoped to the plan.
-- [ ] Invalid patch format is detected.
-- [ ] Empty patch output is detected.
-- [ ] Patch Mode does not modify files.
-- [ ] Running Patch Mode leaves `git diff` empty.
-- [ ] Patch generation tests pass.
+- [x] The agent can generate a unified diff patch.
+- [x] The patch uses repository-relative paths.
+- [x] The patch does not contain Markdown code fences.
+- [x] The patch is scoped to the plan.
+- [x] Invalid patch format is detected.
+- [x] Empty patch output is detected.
+- [x] Patch Mode does not modify files.
+- [x] Running Patch Mode leaves `git diff` empty.
+- [x] Patch generation tests pass.
+
+### Delivered Behavior
+
+Milestone 3 added a LangGraph-backed Patch Mode that reuses Plan Mode, generates
+a unified diff through an injectable deterministic patch generator, and validates
+the generated patch for format, path safety, and plan scope.
+
+The `codeflow patch` command returns JSON `ToolResult` output and does not apply
+patches, run pytest, or modify repository files.
 
 ### Non-goals
 

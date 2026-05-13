@@ -52,9 +52,9 @@ The MVP must not allow the LLM to directly overwrite files. All code changes mus
 
 ## Current Status
 
-Status: Milestone 2 complete.
+Status: Milestone 3 complete.
 
-The project now has a runnable read-only planning foundation:
+The project now has a runnable read-only patch-generation foundation:
 
 - installable package scaffold under `src/codeflow_agent/`;
 - structured `ToolResult` responses for read-only tools;
@@ -63,13 +63,15 @@ The project now has a runnable read-only planning foundation:
 - minimal read-only CLI commands: `inspect`, `read`, and `search`;
 - LangGraph-backed Plan Mode through `codeflow plan`;
 - deterministic injectable planner seam for task analysis and change planning;
+- Patch Mode through `codeflow patch`;
+- deterministic injectable patch generator and unified diff validation;
 - `examples/calculator_bug` as the stable demo fixture;
 - pytest configured to collect only the main `tests/` directory.
 
 The next implementation target is:
 
 ```text
-Milestone 3: Patch Generation
+Milestone 4: Patch Review and Apply
 ```
 
 See `docs/roadmap.md` for the current roadmap.
@@ -88,6 +90,12 @@ Milestone 2 adds planning without modifying files:
 
 ```text
 codeflow plan --repo ./examples/calculator_bug "Fix add() for negative numbers"
+```
+
+Milestone 3 adds patch generation without applying files:
+
+```text
+codeflow patch --repo ./examples/calculator_bug "Fix add() for negative numbers"
 ```
 
 Later milestones will add the full fix flow. The intended final MVP interaction is:
@@ -129,7 +137,8 @@ Incorrect result:
 3
 ```
 
-The current M1 demo supports read-only inspection only. The final MVP demo should show the full loop:
+The current demo supports read-only inspection, planning, and patch generation.
+The final MVP demo should show the full loop:
 
 ```text
 analyze task
@@ -186,7 +195,7 @@ The MVP roadmap is:
 ```text
 Milestone 1: Read-only Repo Agent (done)
 Milestone 2: Plan Mode (done)
-Milestone 3: Patch Generation
+Milestone 3: Patch Generation (done)
 Milestone 4: Patch Review and Apply
 Milestone 5: Run Tests and Feedback Loop
 Milestone 6: Minimal Demo
