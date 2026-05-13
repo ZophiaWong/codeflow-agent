@@ -35,7 +35,7 @@ Use the following status values:
 | Milestone | Name                        | Status        |
 | --------- | --------------------------- | ------------- |
 | 1         | Read-only Repo Agent        | `done`        |
-| 2         | Plan Mode                   | `not_started` |
+| 2         | Plan Mode                   | `done`        |
 | 3         | Patch Generation            | `not_started` |
 | 4         | Patch Review and Apply      | `not_started` |
 | 5         | Run Tests and Feedback Loop | `not_started` |
@@ -114,7 +114,7 @@ Do not implement:
 
 ## 5. Milestone 2: Plan Mode
 
-Status: `not_started`
+Status: `done`
 
 ### Goal
 
@@ -141,13 +141,23 @@ codeflow plan --repo ./examples/calculator_bug "Fix add() for negative numbers"
 
 ### Acceptance Criteria
 
-- [ ] The agent can classify whether a task likely needs code changes.
-- [ ] The agent can build relevant repository context from read-only tools.
-- [ ] The plan includes target files, intended change, and validation strategy.
-- [ ] Plan Mode does not generate patches.
-- [ ] Plan Mode does not modify files.
-- [ ] Running Plan Mode leaves `git diff` empty.
-- [ ] Node-level tests pass.
+- [x] The agent can classify whether a task likely needs code changes.
+- [x] The agent can build relevant repository context from read-only tools.
+- [x] The plan includes target files, intended change, and validation strategy.
+- [x] Plan Mode does not generate patches.
+- [x] Plan Mode does not modify files.
+- [x] Running Plan Mode leaves `git diff` empty.
+- [x] Node-level tests pass.
+
+### Delivered Behavior
+
+Milestone 2 added a LangGraph-backed planning workflow with `Analyze Task`,
+`Build Repo Context`, `Plan Changes`, and final summary nodes. The planner is an
+injectable deterministic seam for now, so tests do not depend on real LLM calls
+or provider configuration.
+
+The `codeflow plan` command returns JSON `ToolResult` output and performs only
+read-only repository inspection.
 
 ### Non-goals
 

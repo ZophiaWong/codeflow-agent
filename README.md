@@ -52,22 +52,24 @@ The MVP must not allow the LLM to directly overwrite files. All code changes mus
 
 ## Current Status
 
-Status: Milestone 1 complete.
+Status: Milestone 2 complete.
 
-The project now has a runnable read-only repository inspection foundation:
+The project now has a runnable read-only planning foundation:
 
 - installable package scaffold under `src/codeflow_agent/`;
 - structured `ToolResult` responses for read-only tools;
 - safe repository-local path handling;
 - pure-Python `list_files`, `read_file`, and `search_code` tools;
 - minimal read-only CLI commands: `inspect`, `read`, and `search`;
+- LangGraph-backed Plan Mode through `codeflow plan`;
+- deterministic injectable planner seam for task analysis and change planning;
 - `examples/calculator_bug` as the stable demo fixture;
 - pytest configured to collect only the main `tests/` directory.
 
 The next implementation target is:
 
 ```text
-Milestone 2: Plan Mode
+Milestone 3: Patch Generation
 ```
 
 See `docs/roadmap.md` for the current roadmap.
@@ -80,6 +82,12 @@ Milestone 1 exposes read-only repository inspection commands:
 codeflow inspect --repo ./examples/calculator_bug
 codeflow search --repo ./examples/calculator_bug add
 codeflow read --repo ./examples/calculator_bug src/calculator.py
+```
+
+Milestone 2 adds planning without modifying files:
+
+```text
+codeflow plan --repo ./examples/calculator_bug "Fix add() for negative numbers"
 ```
 
 Later milestones will add the full fix flow. The intended final MVP interaction is:
@@ -177,7 +185,7 @@ The MVP roadmap is:
 
 ```text
 Milestone 1: Read-only Repo Agent (done)
-Milestone 2: Plan Mode
+Milestone 2: Plan Mode (done)
 Milestone 3: Patch Generation
 Milestone 4: Patch Review and Apply
 Milestone 5: Run Tests and Feedback Loop

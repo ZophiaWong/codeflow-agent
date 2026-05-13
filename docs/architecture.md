@@ -49,11 +49,12 @@ The core architectural goal is to separate reasoning, tool execution, file modif
 
 ## Current Implementation Snapshot
 
-Milestone 1 is complete. The implemented runtime surface is intentionally
-limited to read-only repository inspection:
+Milestone 2 is complete. The implemented runtime surface is intentionally
+limited to read-only repository inspection and planning:
 
 ```text
 CLI
+→ LangGraph Plan Mode workflow
 → ToolResult-returning read-only tools
 → local filesystem inspection inside repo_root
 ```
@@ -63,20 +64,22 @@ Implemented modules include:
 - `codeflow_agent.results` for the shared `ToolResult` contract;
 - `codeflow_agent.paths` for repository-local path safety;
 - `codeflow_agent.tools` for `list_files`, `read_file`, and pure-Python `search_code`;
-- `codeflow_agent.cli` for `inspect`, `read`, and `search`.
+- `codeflow_agent.plan_mode` for the planning-only LangGraph workflow;
+- `codeflow_agent.planner` for the deterministic injectable planner seam;
+- `codeflow_agent.cli` for `inspect`, `read`, `search`, and `plan`.
 
-LangGraph workflow nodes, LLM calls, patch editing, git diff inspection, pytest
-execution tools, and bounded retry are still future milestones.
+Real LLM calls, patch editing, git diff inspection, pytest execution tools, and
+bounded retry are still future milestones.
 
 ## 3. Domain Map
 
 | Domain                 | Responsibility                                   | MVP Status | Known Gaps                                  |
 | ---------------------- | ------------------------------------------------ | ---------- | ------------------------------------------- |
-| CLI Interface          | Accept repository path, user task, and options   | M1 partial | Read-only commands exist; task flow remains |
-| Workflow Orchestration | Run the LangGraph state machine                  | Required   | Multi-Agent orchestration is post-MVP       |
-| Task Understanding     | Decide whether the task needs code changes       | Required   | Can start with simple structured LLM output |
-| Repository Context     | List, search, and read relevant code             | M1 done    | Context compression arrives with workflow   |
-| Planning               | Produce a scoped change plan                     | Required   | No separate Planner Agent in MVP            |
+| CLI Interface          | Accept repository path, user task, and options   | M2 partial | Plan command exists; fix flow remains       |
+| Workflow Orchestration | Run the LangGraph state machine                  | M2 partial | Patch/test routing remains future work      |
+| Task Understanding     | Decide whether the task needs code changes       | M2 partial | Real LLM adapter remains future work        |
+| Repository Context     | List, search, and read relevant code             | M2 done    | More advanced retrieval is post-MVP         |
+| Planning               | Produce a scoped change plan                     | M2 done    | No separate Planner Agent in MVP            |
 | Patch Editing          | Generate, review, and apply unified diffs        | Required   | New/delete file support can be limited      |
 | Verification           | Run controlled pytest and extract result summary | Required   | No arbitrary shell execution                |
 | Reporting              | Produce success, failure, or no-change summary   | Required   | Rich output can improve over time           |

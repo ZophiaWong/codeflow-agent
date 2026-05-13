@@ -40,3 +40,13 @@ def test_cli_returns_nonzero_for_tool_failure(tmp_path, capsys):
     output = json.loads(capsys.readouterr().out)
     assert exit_code == 1
     assert output["ok"] is False
+
+
+def test_cli_plan_outputs_json_tool_result(capsys):
+    exit_code = main(["plan", "--repo", "examples/calculator_bug", "Fix add() for negative numbers"])
+
+    output = json.loads(capsys.readouterr().out)
+    assert exit_code == 0
+    assert output["ok"] is True
+    assert output["data"]["status"] == "planned"
+    assert "src/calculator.py" in output["data"]["plan"]["target_files"]
