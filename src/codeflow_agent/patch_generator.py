@@ -13,6 +13,9 @@ class PatchGenerator(Protocol):
         task_analysis: dict[str, Any],
         repo_context: dict[str, Any],
         plan: dict[str, Any],
+        test_result: dict[str, Any] | None = None,
+        iteration_count: int = 1,
+        error_summary: dict[str, Any] | None = None,
     ) -> str:
         """Return a unified diff patch."""
 
@@ -27,6 +30,9 @@ class DeterministicPatchGenerator:
         task_analysis: dict[str, Any],
         repo_context: dict[str, Any],
         plan: dict[str, Any],
+        test_result: dict[str, Any] | None = None,
+        iteration_count: int = 1,
+        error_summary: dict[str, Any] | None = None,
     ) -> str:
         if not plan.get("needs_patch"):
             return ""

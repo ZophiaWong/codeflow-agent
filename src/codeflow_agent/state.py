@@ -27,6 +27,12 @@ class ApplyState(PatchState, total=False):
     git_diff: dict[str, Any] | None
 
 
+class FixState(ApplyState, total=False):
+    test_result: dict[str, Any] | None
+    iteration_count: int
+    max_iterations: int
+
+
 def initial_plan_state(repo_root: str, user_task: str) -> PlanState:
     return {
         "repo_root": repo_root,
@@ -52,4 +58,12 @@ def initial_apply_state(repo_root: str, user_task: str) -> ApplyState:
     state["patch_review"] = None
     state["apply_result"] = None
     state["git_diff"] = None
+    return state
+
+
+def initial_fix_state(repo_root: str, user_task: str, *, max_iterations: int = 2) -> FixState:
+    state: FixState = initial_apply_state(repo_root, user_task)
+    state["test_result"] = None
+    state["iteration_count"] = 1
+    state["max_iterations"] = max_iterations
     return state

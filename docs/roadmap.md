@@ -38,7 +38,7 @@ Use the following status values:
 | 2         | Plan Mode                   | `done`        |
 | 3         | Patch Generation            | `done`        |
 | 4         | Patch Review and Apply      | `done`        |
-| 5         | Run Tests and Feedback Loop | `not_started` |
+| 5         | Run Tests and Feedback Loop | `done`        |
 | 6         | Minimal Demo                | `not_started` |
 
 ## 4. Milestone 1: Read-only Repo Agent
@@ -289,7 +289,7 @@ Do not implement:
 
 ## 8. Milestone 5: Run Tests and Feedback Loop
 
-Status: `not_started`
+Status: `done`
 
 ### Goal
 
@@ -314,17 +314,30 @@ codeflow fix --repo ./examples/calculator_bug "Fix add() for negative numbers"
 
 ### Acceptance Criteria
 
-- [ ] `run_tests` supports the default command `python -m pytest -q`.
-- [ ] Test command execution uses `shell=False`.
-- [ ] Test command execution has a timeout.
-- [ ] Disallowed commands are rejected.
-- [ ] Passing tests produce `status = success`.
-- [ ] Failing tests produce a compact `error_summary`.
-- [ ] Test failure can feed back into patch generation.
-- [ ] Retry count is bounded.
-- [ ] Reaching the retry limit produces `status = failed`.
-- [ ] The agent never reports success when tests fail.
-- [ ] Tests for run, failure summary, and retry routing pass.
+- [x] `run_tests` supports the default command `python -m pytest -q`.
+- [x] Test command execution uses `shell=False`.
+- [x] Test command execution has a timeout.
+- [x] Disallowed commands are rejected.
+- [x] Passing tests produce `status = success`.
+- [x] Failing tests produce a compact `error_summary`.
+- [x] Test failure can feed back into patch generation.
+- [x] Retry count is bounded.
+- [x] Reaching the retry limit produces `status = failed`.
+- [x] The agent never reports success when tests fail.
+- [x] Tests for run, failure summary, and retry routing pass.
+
+### Delivered Behavior
+
+Milestone 5 added a LangGraph-backed Fix Mode that reuses Plan, Patch, and
+Apply Mode behavior, runs controlled pytest after patch application, analyzes
+the result, and retries once by default when tests fail.
+
+The `run_tests` tool allows only the default pytest command shape, executes with
+`shell=False`, enforces a timeout, and stores compact test output in state.
+
+The `codeflow fix` command returns JSON `ToolResult` output with final status,
+git diff summary, test result, retry count, and final output. Failed-test retry
+is bounded and does not use automatic `git reset` or `git checkout`.
 
 ### Non-goals
 
