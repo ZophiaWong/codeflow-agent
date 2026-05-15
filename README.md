@@ -52,9 +52,9 @@ The MVP must not allow the LLM to directly overwrite files. All code changes mus
 
 ## Current Status
 
-Status: Milestone 3 complete.
+Status: Milestone 4 complete.
 
-The project now has a runnable read-only patch-generation foundation:
+The project now has a runnable patch review and apply foundation:
 
 - installable package scaffold under `src/codeflow_agent/`;
 - structured `ToolResult` responses for read-only tools;
@@ -65,13 +65,15 @@ The project now has a runnable read-only patch-generation foundation:
 - deterministic injectable planner seam for task analysis and change planning;
 - Patch Mode through `codeflow patch`;
 - deterministic injectable patch generator and unified diff validation;
+- Apply Mode through `codeflow apply`;
+- deterministic patch review checks, controlled dry-run patch application, and git diff reporting;
 - `examples/calculator_bug` as the stable demo fixture;
 - pytest configured to collect only the main `tests/` directory.
 
 The next implementation target is:
 
 ```text
-Milestone 4: Patch Review and Apply
+Milestone 5: Run Tests and Feedback Loop
 ```
 
 See `docs/roadmap.md` for the current roadmap.
@@ -96,6 +98,12 @@ Milestone 3 adds patch generation without applying files:
 
 ```text
 codeflow patch --repo ./examples/calculator_bug "Fix add() for negative numbers"
+```
+
+Milestone 4 adds patch review and controlled application:
+
+```text
+codeflow apply --repo ./examples/calculator_bug "Fix add() for negative numbers"
 ```
 
 Later milestones will add the full fix flow. The intended final MVP interaction is:
@@ -137,7 +145,9 @@ Incorrect result:
 3
 ```
 
-The current demo supports read-only inspection, planning, and patch generation.
+The current demo supports read-only inspection, planning, patch generation,
+patch review, controlled patch application, and git diff reporting. It does not
+run pytest or retry until Milestone 5.
 The final MVP demo should show the full loop:
 
 ```text
@@ -196,7 +206,7 @@ The MVP roadmap is:
 Milestone 1: Read-only Repo Agent (done)
 Milestone 2: Plan Mode (done)
 Milestone 3: Patch Generation (done)
-Milestone 4: Patch Review and Apply
+Milestone 4: Patch Review and Apply (done)
 Milestone 5: Run Tests and Feedback Loop
 Milestone 6: Minimal Demo
 ```

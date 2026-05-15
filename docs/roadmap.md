@@ -37,7 +37,7 @@ Use the following status values:
 | 1         | Read-only Repo Agent        | `done`        |
 | 2         | Plan Mode                   | `done`        |
 | 3         | Patch Generation            | `done`        |
-| 4         | Patch Review and Apply      | `not_started` |
+| 4         | Patch Review and Apply      | `done`        |
 | 5         | Run Tests and Feedback Loop | `not_started` |
 | 6         | Minimal Demo                | `not_started` |
 
@@ -226,7 +226,7 @@ Do not implement:
 
 ## 7. Milestone 4: Patch Review and Apply
 
-Status: `not_started`
+Status: `done`
 
 ### Goal
 
@@ -253,18 +253,28 @@ codeflow apply --repo ./examples/calculator_bug "Fix add() for negative numbers"
 
 ### Acceptance Criteria
 
-- [ ] `review_patch` accepts valid unified diffs.
-- [ ] `review_patch` rejects Markdown-wrapped patches.
-- [ ] `review_patch` rejects absolute paths.
-- [ ] `review_patch` rejects `../` path traversal.
-- [ ] `review_patch` rejects forbidden paths.
-- [ ] `review_patch` rejects overly large patches.
-- [ ] `apply_patch` requires review approval.
-- [ ] `apply_patch` runs a dry-run check before application.
-- [ ] Approved patches can be applied successfully.
-- [ ] `git_diff` reports changed files and diff summary.
-- [ ] Patch application failure is reported through structured state.
-- [ ] Tests for review and apply pass.
+- [x] `review_patch` accepts valid unified diffs.
+- [x] `review_patch` rejects Markdown-wrapped patches.
+- [x] `review_patch` rejects absolute paths.
+- [x] `review_patch` rejects `../` path traversal.
+- [x] `review_patch` rejects forbidden paths.
+- [x] `review_patch` rejects overly large patches.
+- [x] `apply_patch` requires review approval.
+- [x] `apply_patch` runs a dry-run check before application.
+- [x] Approved patches can be applied successfully.
+- [x] `git_diff` reports changed files and diff summary.
+- [x] Patch application failure is reported through structured state.
+- [x] Tests for review and apply pass.
+
+### Delivered Behavior
+
+Milestone 4 added a LangGraph-backed Apply Mode that reuses Plan Mode and Patch
+Mode, reviews generated patches with deterministic limits, runs a dry-run Git
+apply check, applies approved patches, and reports a compact git diff summary.
+
+The `codeflow apply` command returns JSON `ToolResult` output and is the first
+write-capable CLI command. It does not run pytest, retry, commit, reset, or
+fall back to direct file overwrites.
 
 ### Non-goals
 

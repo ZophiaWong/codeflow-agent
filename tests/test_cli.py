@@ -1,4 +1,7 @@
 import json
+import shutil
+import subprocess
+from pathlib import Path
 
 from codeflow_agent.cli import main
 
@@ -60,3 +63,18 @@ def test_cli_patch_outputs_json_tool_result(capsys):
     assert output["ok"] is True
     assert output["data"]["status"] == "patch_generated"
     assert "+    return a + b" in output["data"]["patch"]
+
+
+def test_cli_apply_outputs_json_tool_result(tmp_path, capsys):
+    repo = tmp_path / "calculator_bug"
+    shutil.copytree(Path("examples/calculator_bug"), repo)
+    subprocess.run(["git", "init"], cwd=repo, check=True, capture_output=True, text=True)
+    subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True, text=True)
+
+    exit_code = main(["apply", "--repo", str(repo), "Fix add() for negative numbers"])
+
+    output = json.loads(capsys.readouterr().out)
+    assert exit_code == 0
+    assert output["ok"] is True
+    assert output["data"]["status"] == "applied"
+    assert output["data"]["git_diff"]["changed_files"] == ["src/calculator.py"]

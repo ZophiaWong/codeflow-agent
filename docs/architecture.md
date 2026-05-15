@@ -49,14 +49,16 @@ The core architectural goal is to separate reasoning, tool execution, file modif
 
 ## Current Implementation Snapshot
 
-Milestone 3 is complete. The implemented runtime surface is intentionally
-limited to read-only repository inspection, planning, and patch generation:
+Milestone 4 is complete. The implemented runtime surface supports repository
+inspection, planning, patch generation, patch review, controlled patch
+application, and git diff reporting:
 
 ```text
 CLI
-→ LangGraph Plan/Patch Mode workflows
+→ LangGraph Plan/Patch/Apply Mode workflows
 → ToolResult-returning read-only tools
-→ local filesystem inspection inside repo_root
+→ controlled patch tools
+→ local filesystem and Git operations inside repo_root
 ```
 
 Implemented modules include:
@@ -69,21 +71,25 @@ Implemented modules include:
 - `codeflow_agent.patch_mode` for the patch-generation LangGraph workflow;
 - `codeflow_agent.patch_generator` for the deterministic injectable patch seam;
 - `codeflow_agent.patch_validation` for generated unified diff validation;
-- `codeflow_agent.cli` for `inspect`, `read`, `search`, `plan`, and `patch`.
+- `codeflow_agent.patch_review` for deterministic patch review limits;
+- `codeflow_agent.patch_apply` for dry-run guarded patch application;
+- `codeflow_agent.git_tools` for compact git diff reporting;
+- `codeflow_agent.apply_mode` for the review-and-apply LangGraph workflow;
+- `codeflow_agent.cli` for `inspect`, `read`, `search`, `plan`, `patch`, and `apply`.
 
-Patch review, patch application, git diff inspection, pytest execution tools,
-real LLM calls, and bounded retry are still future milestones.
+Pytest execution tools, real LLM calls, and bounded retry are still future
+milestones.
 
 ## 3. Domain Map
 
 | Domain                 | Responsibility                                   | MVP Status | Known Gaps                                  |
 | ---------------------- | ------------------------------------------------ | ---------- | ------------------------------------------- |
-| CLI Interface          | Accept repository path, user task, and options   | M3 partial | Fix flow remains                            |
-| Workflow Orchestration | Run the LangGraph state machine                  | M3 partial | Apply/test routing remains future work      |
+| CLI Interface          | Accept repository path, user task, and options   | M4 partial | Fix flow remains                            |
+| Workflow Orchestration | Run the LangGraph state machine                  | M4 partial | Test routing remains future work            |
 | Task Understanding     | Decide whether the task needs code changes       | M2 partial | Real LLM adapter remains future work        |
 | Repository Context     | List, search, and read relevant code             | M2 done    | More advanced retrieval is post-MVP         |
 | Planning               | Produce a scoped change plan                     | M2 done    | No separate Planner Agent in MVP            |
-| Patch Editing          | Generate, review, and apply unified diffs        | M3 partial | Review/apply remain future work             |
+| Patch Editing          | Generate, review, and apply unified diffs        | M4 partial | Test feedback retry remains future work     |
 | Verification           | Run controlled pytest and extract result summary | Required   | No arbitrary shell execution                |
 | Reporting              | Produce success, failure, or no-change summary   | Required   | Rich output can improve over time           |
 | Safety Constraints     | Enforce path, command, and patch boundaries      | Required   | Full permission system is post-MVP          |

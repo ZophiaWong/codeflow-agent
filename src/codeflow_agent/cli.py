@@ -6,6 +6,7 @@ import argparse
 import json
 from collections.abc import Sequence
 
+from codeflow_agent.apply_mode import run_apply_mode
 from codeflow_agent.patch_mode import run_patch_mode
 from codeflow_agent.plan_mode import run_plan_mode
 from codeflow_agent.tools import list_files, read_file, search_code
@@ -37,6 +38,10 @@ def build_parser() -> argparse.ArgumentParser:
     patch_parser.add_argument("--repo", required=True, help="Repository root")
     patch_parser.add_argument("task", help="Development task to patch")
 
+    apply_parser = subparsers.add_parser("apply", help="Review and apply a generated unified diff")
+    apply_parser.add_argument("--repo", required=True, help="Repository root")
+    apply_parser.add_argument("task", help="Development task to apply")
+
     return parser
 
 
@@ -54,6 +59,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         result = run_plan_mode(args.repo, args.task)
     elif args.command == "patch":
         result = run_patch_mode(args.repo, args.task)
+    elif args.command == "apply":
+        result = run_apply_mode(args.repo, args.task)
     else:
         parser.error(f"unknown command: {args.command}")
 

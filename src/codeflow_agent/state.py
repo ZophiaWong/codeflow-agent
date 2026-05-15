@@ -21,6 +21,12 @@ class PatchState(PlanState, total=False):
     patch_validation: dict[str, Any] | None
 
 
+class ApplyState(PatchState, total=False):
+    patch_review: dict[str, Any] | None
+    apply_result: dict[str, Any] | None
+    git_diff: dict[str, Any] | None
+
+
 def initial_plan_state(repo_root: str, user_task: str) -> PlanState:
     return {
         "repo_root": repo_root,
@@ -38,4 +44,12 @@ def initial_patch_state(repo_root: str, user_task: str) -> PatchState:
     state: PatchState = initial_plan_state(repo_root, user_task)
     state["patch"] = None
     state["patch_validation"] = None
+    return state
+
+
+def initial_apply_state(repo_root: str, user_task: str) -> ApplyState:
+    state: ApplyState = initial_patch_state(repo_root, user_task)
+    state["patch_review"] = None
+    state["apply_result"] = None
+    state["git_diff"] = None
     return state
